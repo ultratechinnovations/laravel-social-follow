@@ -48,13 +48,13 @@ return [
         'cache' => [
             'enabled' => env('FOLLOW_CACHE_ENABLED', true),
             'expiration' => 86400,
-            'key_prefix' => 'social_follow_'
+            'key_prefix' => 'social_follow_',
         ],
         'rate_limiting' => [
             'enabled' => true,
             'attempts' => 30,
-            'decay_minutes' => 1
-        ]
+            'decay_minutes' => 1,
+        ],
     ],
 
     /*
@@ -66,8 +66,8 @@ return [
         'cache' => [
             'enabled' => env('BLOCK_CACHE_ENABLED', true),
             'expiration' => 86400,
-            'key_prefix' => 'social_block_'
+            'key_prefix' => 'social_block_',
         ],
-        'auto_unfollow' => true // Whether to automatically unfollow when blocking
-    ]
+        'auto_unfollow' => true, // Whether to automatically unfollow when blocking
+    ],
 ];

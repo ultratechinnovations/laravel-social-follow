@@ -9,14 +9,14 @@ class GetFollowingCountAction
 {
     public function execute(Model $follower): int
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshCount($follower);
         }
 
         $cacheKey = $this->getCacheKey('count', $follower);
         $cacheTtl = config('social-follow.follow.cache.ttl');
 
-        return Cache::memo()->remember($cacheKey, $cacheTtl, function() use ($follower) {
+        return Cache::memo()->remember($cacheKey, $cacheTtl, function () use ($follower) {
             return $this->getFreshCount($follower);
         });
     }
@@ -31,6 +31,7 @@ class GetFollowingCountAction
     protected function getCacheKey(string $type, Model $model): string
     {
         $prefix = config('social-follow.follow.cache.prefix');
+
         return "{$prefix}:{$type}:{$model->getKey()}";
     }
 }

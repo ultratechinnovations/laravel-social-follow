@@ -9,14 +9,14 @@ class CheckFollowingStatusAction
 {
     public function execute(Model $follower, Model $followable): bool
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshStatus($follower, $followable);
         }
 
         $cacheKey = $this->getCacheKey($follower, $followable, 'status');
         $cacheTtl = config('social-follow.follow.cache.ttl');
 
-        return Cache::memo()->remember($cacheKey, $cacheTtl, function() use ($follower, $followable) {
+        return Cache::memo()->remember($cacheKey, $cacheTtl, function () use ($follower, $followable) {
             return $this->getFreshStatus($follower, $followable);
         });
     }
@@ -33,6 +33,7 @@ class CheckFollowingStatusAction
     protected function getCacheKey(Model $follower, Model $followable, string $type): string
     {
         $prefix = config('social-follow.follow.cache.prefix');
+
         return "{$prefix}:{$type}:{$follower->getKey()}:{$followable->getMorphClass()}:{$followable->getKey()}";
     }
 }

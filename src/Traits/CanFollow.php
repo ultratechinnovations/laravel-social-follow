@@ -2,16 +2,16 @@
 
 namespace UltraTechInnovations\SocialFollow\Traits;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Collection;
 use UltraTechInnovations\SocialFollow\Actions\AcceptFollowRequestAction;
-use UltraTechInnovations\SocialFollow\Actions\FollowAction;
-use UltraTechInnovations\SocialFollow\Actions\GetFollowingsAction;
-use UltraTechInnovations\SocialFollow\Actions\GetFollowingsRelationshipAction;
-use UltraTechInnovations\SocialFollow\Actions\GetFollowingCountAction;
 use UltraTechInnovations\SocialFollow\Actions\CheckFollowingStatusAction;
 use UltraTechInnovations\SocialFollow\Actions\CheckFollowRequestAction;
+use UltraTechInnovations\SocialFollow\Actions\FollowAction;
+use UltraTechInnovations\SocialFollow\Actions\GetFollowingCountAction;
+use UltraTechInnovations\SocialFollow\Actions\GetFollowingsAction;
+use UltraTechInnovations\SocialFollow\Actions\GetFollowingsRelationshipAction;
 use UltraTechInnovations\SocialFollow\Actions\UnfollowAction;
 use UltraTechInnovations\SocialFollow\Models\Follow;
 
@@ -39,12 +39,14 @@ trait CanFollow
     public function isFollowing(Model $followable): bool
     {
         $this->validateFollowable($followable);
+
         return app(CheckFollowingStatusAction::class)->execute($this, $followable);
     }
 
     public function hasRequestedToFollow(Model $followable): bool
     {
         $this->validateFollowable($followable);
+
         return app(CheckFollowRequestAction::class)->execute($this, $followable);
     }
 

@@ -1,15 +1,11 @@
 <?php
 
-use UltraTechInnovations\SocialFollow\Traits\CanBeFollowed;
-use UltraTechInnovations\SocialFollow\Traits\CanFollow;
-use UltraTechInnovations\SocialFollow\Models\Follow;
-use UltraTechInnovations\SocialFollow\Actions\GetFollowersAction;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Collection;
-use Tests\TestModels\User;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestModels\Page;
-use Tests\TestModels\InvalidModel;
+use Tests\TestModels\User;
+use UltraTechInnovations\SocialFollow\Actions\GetFollowersAction;
+use UltraTechInnovations\SocialFollow\Models\Follow;
 
 beforeEach(function () {
     // Setup configuration
@@ -17,7 +13,7 @@ beforeEach(function () {
         'cache.default' => 'array',
         'social-follow.table_prefix' => 'test_',
         'social-follow.models.follow' => Follow::class,
-        'social-follow.cache.enabled' => false
+        'social-follow.cache.enabled' => false,
     ]);
 
     // Create tables

@@ -13,14 +13,14 @@ final class GetMutualUsersAction
 {
     public function execute(Model $user1, Model $user2): Collection
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshMutualUsers($user1, $user2);
         }
 
         $cacheKey = $this->getCacheKey($user1, $user2);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($user1, $user2) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($user1, $user2) {
             return $this->getFreshMutualUsers($user1, $user2);
         });
     }
@@ -50,7 +50,7 @@ final class GetMutualUsersAction
         }
 
         // Load mutual users with their types
-        $mutualUsers = new Collection();
+        $mutualUsers = new Collection;
         foreach ($mutualUserIds as $type => $ids) {
             $typeUsers = app($type)->whereIn('id', $ids)->get();
             $mutualUsers = $mutualUsers->merge($typeUsers);
@@ -80,7 +80,7 @@ final class GetMutualUsersAction
 
     public static function invalidateCache(Model $user1, Model $user2): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 

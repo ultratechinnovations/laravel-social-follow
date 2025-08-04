@@ -1,19 +1,16 @@
 <?php
 
-use UltraTechInnovations\SocialFollow\Models\Block;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
-use Tests\TestModels\User;
 use Tests\TestModels\Page;
-use function Pest\Laravel\artisan;
-
+use Tests\TestModels\User;
+use UltraTechInnovations\SocialFollow\Models\Block;
 
 beforeEach(function () {
     // Setup table prefix for testing
     config(['social-follow.table_prefix' => 'test_']);
 
     // Create tables with proper prefixed names
-    if (!Schema::hasTable('test_blocks')) {
+    if (! Schema::hasTable('test_blocks')) {
         Schema::create('test_blocks', function ($table) {
             $table->id();
             $table->unsignedBigInteger('blocker_id');
@@ -24,7 +21,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_users')) {
+    if (! Schema::hasTable('test_users')) {
         Schema::create('test_users', function ($table) {
             $table->id();
             $table->string('name');
@@ -32,7 +29,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_pages')) {
+    if (! Schema::hasTable('test_pages')) {
         Schema::create('test_pages', function ($table) {
             $table->id();
             $table->string('name');
@@ -49,13 +46,13 @@ afterEach(function () {
 });
 
 it('uses correct table name with prefix', function () {
-    $block = new Block();
+    $block = new Block;
 
     expect($block->getTable())->toBe('test_blocks');
 });
 
 it('has correct fillable attributes', function () {
-    $block = new Block();
+    $block = new Block;
 
     expect($block->getFillable())->toBe([
         'blocker_id',
@@ -81,13 +78,13 @@ it('can be created with valid attributes', function () {
 });
 
 it('has morphTo relationship for blocker', function () {
-    $block = new Block();
+    $block = new Block;
 
     expect($block->blocker())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
 });
 
 it('has morphTo relationship for blockable', function () {
-    $block = new Block();
+    $block = new Block;
 
     expect($block->blockable())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
 });
@@ -123,6 +120,6 @@ it('can retrieve blockable model', function () {
 });
 
 it('requires all fields for creation', function () {
-    expect(fn() => Block::create([]))
+    expect(fn () => Block::create([]))
         ->toThrow(\Illuminate\Database\QueryException::class);
 });

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace UltraTechInnovations\SocialFollow\Actions;
 
@@ -19,14 +21,14 @@ final class GetFollowersAction
     public function execute(Model $followable, bool $acceptedOnly = true): Collection
     {
 
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshFollowers($followable, $acceptedOnly);
         }
 
         $cacheKey = $this->getFollowersCacheKey($followable, $acceptedOnly);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($followable, $acceptedOnly) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($followable, $acceptedOnly) {
             return $this->getFreshFollowers($followable, $acceptedOnly);
         });
     }
@@ -39,14 +41,14 @@ final class GetFollowersAction
      */
     public function count(Model $followable, bool $acceptedOnly = true): int
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshFollowerCount($followable, $acceptedOnly);
         }
 
         $cacheKey = $this->getFollowerCountCacheKey($followable, $acceptedOnly);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($followable, $acceptedOnly) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($followable, $acceptedOnly) {
             return $this->getFreshFollowerCount($followable, $acceptedOnly);
         });
     }
@@ -84,6 +86,7 @@ final class GetFollowersAction
     {
         $prefix = config('social-follow.follow.cache.prefix', 'social_follow');
         $status = $acceptedOnly ? 'accepted' : 'all';
+
         return "{$prefix}:followers:{$followable->getMorphClass()}:{$followable->getKey()}:{$status}";
     }
 
@@ -91,6 +94,7 @@ final class GetFollowersAction
     {
         $prefix = config('social-follow.follow.cache.prefix', 'social_follow');
         $status = $acceptedOnly ? 'accepted' : 'all';
+
         return "{$prefix}:followers_count:{$followable->getMorphClass()}:{$followable->getKey()}:{$status}";
     }
 
@@ -99,7 +103,7 @@ final class GetFollowersAction
      */
     public static function invalidateCache(Model $followable): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 

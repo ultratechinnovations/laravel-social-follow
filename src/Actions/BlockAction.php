@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace UltraTechInnovations\SocialFollow\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use UltraTechInnovations\SocialFollow\Models\Block;
 
 final class BlockAction
@@ -33,17 +33,16 @@ final class BlockAction
         });
     }
 
-
     private function blockExists(Model $blocker, Model $blockable): bool
     {
-        if (!config('social-follow.block.cache.enabled', false)) {
+        if (! config('social-follow.block.cache.enabled', false)) {
             return $this->freshBlockExists($blocker, $blockable);
         }
 
         $cacheKey = $this->getBlockCacheKey($blocker, $blockable);
         $ttl = config('social-follow.block.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($blocker, $blockable) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($blocker, $blockable) {
             return $this->freshBlockExists($blocker, $blockable);
         });
     }
@@ -60,7 +59,7 @@ final class BlockAction
 
     private function invalidateBlockCaches(Model $blocker, Model $blockable): void
     {
-        if (!config('social-follow.block.cache.enabled', false)) {
+        if (! config('social-follow.block.cache.enabled', false)) {
             return;
         }
 
@@ -83,6 +82,7 @@ final class BlockAction
     private function getBlockCacheKey(Model $blocker, Model $blockable): string
     {
         $prefix = config('social-follow.block.cache.prefix', 'social_block');
+
         return "{$prefix}:exists:{$blocker->getKey()}:{$blockable->getMorphClass()}:{$blockable->getKey()}";
     }
 }

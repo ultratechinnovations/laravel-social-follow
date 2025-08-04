@@ -13,7 +13,7 @@ class GetFollowingsRelationshipAction
         $cacheKey = $this->getCacheKey('relationship', $follower);
         $cacheTtl = config('social-follow.follow.cache.ttl');
 
-        return Cache::memo()->remember($cacheKey, $cacheTtl, function() use ($follower) {
+        return Cache::memo()->remember($cacheKey, $cacheTtl, function () use ($follower) {
             return $follower->hasMany(
                 config('social-follow.models.follow'),
                 'follower_id',
@@ -25,6 +25,7 @@ class GetFollowingsRelationshipAction
     protected function getCacheKey(string $type, Model $model): string
     {
         $prefix = config('social-follow.follow.cache.prefix');
+
         return "{$prefix}:{$type}:{$model->getKey()}";
     }
 }

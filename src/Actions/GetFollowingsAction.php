@@ -16,14 +16,14 @@ final class GetFollowingsAction
         bool $acceptedOnly = true,
         ?string $followableType = null
     ): Collection {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshFollowings($follower, $acceptedOnly, $followableType);
         }
 
         $cacheKey = $this->getFollowingsCacheKey($follower, $acceptedOnly, $followableType);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($follower, $acceptedOnly, $followableType) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($follower, $acceptedOnly, $followableType) {
             return $this->getFreshFollowings($follower, $acceptedOnly, $followableType);
         });
     }
@@ -33,28 +33,28 @@ final class GetFollowingsAction
         bool $acceptedOnly = true,
         ?string $followableType = null
     ): int {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshFollowingCount($follower, $acceptedOnly, $followableType);
         }
 
         $cacheKey = $this->getFollowingCountCacheKey($follower, $acceptedOnly, $followableType);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($follower, $acceptedOnly, $followableType) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($follower, $acceptedOnly, $followableType) {
             return $this->getFreshFollowingCount($follower, $acceptedOnly, $followableType);
         });
     }
 
     public function groupedByType(Model $follower, bool $acceptedOnly = true): array
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshGroupedFollowings($follower, $acceptedOnly);
         }
 
         $cacheKey = $this->getGroupedFollowingsCacheKey($follower, $acceptedOnly);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($follower, $acceptedOnly) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($follower, $acceptedOnly) {
             return $this->getFreshGroupedFollowings($follower, $acceptedOnly);
         });
     }
@@ -156,7 +156,7 @@ final class GetFollowingsAction
 
     public static function invalidateCache(Model $follower): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 

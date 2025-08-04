@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace UltraTechInnovations\SocialFollow\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use UltraTechInnovations\SocialFollow\Models\Follow;
 use UltraTechInnovations\SocialFollow\Notifications\FollowNotification;
 
@@ -12,10 +14,10 @@ class FollowAction
 {
     public function execute(Model $follower, Model $followable): Follow
     {
-        return DB::transaction(function() use ($follower, $followable){
+        return DB::transaction(function () use ($follower, $followable) {
             $existingFollow = $this->getExistingFollow($follower, $followable);
 
-            if($existingFollow){
+            if ($existingFollow) {
                 return $existingFollow;
             }
 
@@ -29,10 +31,11 @@ class FollowAction
 
             $this->updateCacheAfterFollow($follower, $followable);
 
-            if(config('social-follow.notifications.enabled')){
+            if (config('social-follow.notifications.enabled')) {
                 $requiresAcceptance = config('social-follow.approval_required');
                 $followable->notify(new FollowNotification($follower, $requiresAcceptance));
             }
+
             return $follow;
 
         });
@@ -45,7 +48,7 @@ class FollowAction
         if (config('social-follow.follow.cache.enabled')) {
             return Cache::memo()->remember($cacheKey,
                 config('social-follow.follow.cache.ttl'),
-                fn() => Follow::where([
+                fn () => Follow::where([
                     'follower_id' => $follower->getKey(),
                     'follower_type' => $follower->getMorphClass(),
                     'followable_id' => $followable->getKey(),
@@ -64,7 +67,7 @@ class FollowAction
 
     protected function updateCacheAfterFollow(Model $follower, Model $followable): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 
@@ -89,6 +92,7 @@ class FollowAction
     protected function getFollowCacheKey(Model $follower, Model $followable): string
     {
         $prefix = config('social-follow.follow.cache.prefix');
+
         return sprintf('%s:follow:%s:%s:%s:%s',
             $prefix,
             $follower->getKey(),

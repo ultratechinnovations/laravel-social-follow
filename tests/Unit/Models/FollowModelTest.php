@@ -1,18 +1,17 @@
 <?php
 
-use UltraTechInnovations\SocialFollow\Models\Follow;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Carbon;
-use Tests\TestModels\User;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestModels\Page;
+use Tests\TestModels\User;
+use UltraTechInnovations\SocialFollow\Models\Follow;
 
 beforeEach(function () {
     // Setup table prefix for testing
     config(['social-follow.table_prefix' => 'test_']);
 
     // Create tables with proper prefixed names
-    if (!Schema::hasTable('test_follows')) {
+    if (! Schema::hasTable('test_follows')) {
         Schema::create('test_follows', function ($table) {
             $table->id();
             $table->unsignedBigInteger('follower_id');
@@ -24,7 +23,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_users')) {
+    if (! Schema::hasTable('test_users')) {
         Schema::create('test_users', function ($table) {
             $table->id();
             $table->string('name');
@@ -32,7 +31,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_pages')) {
+    if (! Schema::hasTable('test_pages')) {
         Schema::create('test_pages', function ($table) {
             $table->id();
             $table->string('name');
@@ -49,13 +48,13 @@ afterEach(function () {
 });
 
 it('uses correct table name with prefix', function () {
-    $follow = new Follow();
+    $follow = new Follow;
 
     expect($follow->getTable())->toBe('test_follows');
 });
 
 it('has correct fillable attributes', function () {
-    $follow = new Follow();
+    $follow = new Follow;
 
     expect($follow->getFillable())->toBe([
         'follower_id',
@@ -67,7 +66,7 @@ it('has correct fillable attributes', function () {
 });
 
 it('has correct casts', function () {
-    $follow = new Follow();
+    $follow = new Follow;
 
     expect($follow->getCasts())->toHaveKey('accepted_at', 'datetime');
 });
@@ -90,13 +89,13 @@ it('can be created with valid attributes', function () {
 });
 
 it('has morphTo relationship for follower', function () {
-    $follow = new Follow();
+    $follow = new Follow;
 
     expect($follow->follower())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
 });
 
 it('has morphTo relationship for followable', function () {
-    $follow = new Follow();
+    $follow = new Follow;
 
     expect($follow->followable())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphTo::class);
 });

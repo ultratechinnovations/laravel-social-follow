@@ -9,18 +9,18 @@ class CheckFollowRequestAction
 {
     public function execute(Model $follower, Model $followable): bool
     {
-        if (!config('social-follow.approval_required')) {
+        if (! config('social-follow.approval_required')) {
             return false;
         }
 
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return $this->getFreshRequestStatus($follower, $followable);
         }
 
         $cacheKey = $this->getCacheKey($follower, $followable, 'request');
         $cacheTtl = config('social-follow.follow.cache.ttl');
 
-        return Cache::memo()->remember($cacheKey, $cacheTtl, function() use ($follower, $followable) {
+        return Cache::memo()->remember($cacheKey, $cacheTtl, function () use ($follower, $followable) {
             return $this->getFreshRequestStatus($follower, $followable);
         });
     }
@@ -37,6 +37,7 @@ class CheckFollowRequestAction
     protected function getCacheKey(Model $follower, Model $followable, string $type): string
     {
         $prefix = config('social-follow.follow.cache.prefix');
+
         return "{$prefix}:{$type}:{$follower->getKey()}:{$followable->getMorphClass()}:{$followable->getKey()}";
     }
 }

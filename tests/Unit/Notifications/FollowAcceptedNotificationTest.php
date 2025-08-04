@@ -1,23 +1,23 @@
 <?php
 
-use UltraTechInnovations\SocialFollow\Notifications\FollowAcceptedNotification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
-use Tests\TestModels\User;
 use Illuminate\Support\Facades\Schema;
+use Tests\TestModels\User;
+use UltraTechInnovations\SocialFollow\Notifications\FollowAcceptedNotification;
 
 beforeEach(function () {
     Schema::dropIfExists('test_users');
     Schema::dropIfExists('notifications');
 
     // Setup tables
-    if (!Schema::hasTable('test_users')) {
+    if (! Schema::hasTable('test_users')) {
         Schema::create('test_users', function ($table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
         });
     }
-    if(!Schema::hasTable('notifications')) {
+    if (! Schema::hasTable('notifications')) {
         Schema::create('notifications', function ($table) {
             $table->uuid('id')->primary();
             $table->string('type');
@@ -74,7 +74,8 @@ it('generates correct array representation', function () {
 });
 
 it('handles different notifiable types', function () {
-    $page = new class extends \Illuminate\Database\Eloquent\Model {
+    $page = new class extends \Illuminate\Database\Eloquent\Model
+    {
         protected $table = 'pages';
     };
 

@@ -1,15 +1,12 @@
 <?php
 
-use UltraTechInnovations\SocialFollow\Traits\CanFollow;
-use UltraTechInnovations\SocialFollow\Traits\CanBeFollowed;
-use UltraTechInnovations\SocialFollow\Models\Follow;
-use Tests\TestModels\User;
-use Tests\TestModels\Page;
-use Tests\TestModels\InvalidModel;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestModels\InvalidModel;
+use Tests\TestModels\Page;
+use Tests\TestModels\User;
+use UltraTechInnovations\SocialFollow\Models\Follow;
 
 beforeEach(function () {
     // Disable cache for testing
@@ -22,7 +19,7 @@ beforeEach(function () {
     Schema::dropIfExists('test_invalid_models');
 
     // Setup tables
-    if (!Schema::hasTable('test_users')) {
+    if (! Schema::hasTable('test_users')) {
         Schema::create('test_users', function ($table) {
             $table->id();
             $table->string('name');
@@ -30,7 +27,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_pages')) {
+    if (! Schema::hasTable('test_pages')) {
         Schema::create('test_pages', function ($table) {
             $table->id();
             $table->string('name');
@@ -38,7 +35,7 @@ beforeEach(function () {
         });
     }
 
-    if (!Schema::hasTable('test_follows')) {
+    if (! Schema::hasTable('test_follows')) {
         Schema::create('test_follows', function ($table) {
             $table->id();
             $table->unsignedBigInteger('follower_id');
@@ -74,7 +71,7 @@ it('can follow another model', function () {
 
 it('throws exception when trying to follow invalid model', function () {
     $user = User::create(['name' => 'Follower']);
-    $invalid = new InvalidModel();
+    $invalid = new InvalidModel;
 
     $this->expectException(\InvalidArgumentException::class);
     $user->follow($invalid);
@@ -144,7 +141,7 @@ it('can check if following a model', function () {
             'follower_id' => $user->id,
             'follower_type' => User::class,
             'followable_id' => $page->id,
-            'followable_type' => Page::class
+            'followable_type' => Page::class,
         ])->exists())->toBeTrue(); // Double check DB
 });
 

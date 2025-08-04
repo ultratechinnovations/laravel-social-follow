@@ -2,8 +2,8 @@
 
 namespace UltraTechInnovations\SocialFollow\Notifications;
 
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Notifications\Notification;
 
 class FollowNotification extends Notification
 {
@@ -15,6 +15,7 @@ class FollowNotification extends Notification
     public function via($notifiable): array
     {
         $channels = config('social-follow.notifications.channels') ?? [];
+
         return $channels;
     }
 

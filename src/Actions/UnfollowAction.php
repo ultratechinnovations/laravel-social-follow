@@ -16,7 +16,7 @@ class UnfollowAction
         return DB::transaction(function () use ($follower, $followable) {
             $follow = $this->getFollowRelationship($follower, $followable);
 
-            if (!$follow) {
+            if (! $follow) {
                 return false;
             }
 
@@ -32,7 +32,7 @@ class UnfollowAction
 
     protected function getFollowRelationship(Model $follower, Model $followable): ?Follow
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return Follow::where([
                 'follower_id' => $follower->getKey(),
                 'follower_type' => $follower->getMorphClass(),
@@ -44,7 +44,7 @@ class UnfollowAction
         $cacheKey = $this->getFollowCacheKey($follower, $followable);
         $ttl = config('social-follow.follow.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($follower, $followable) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($follower, $followable) {
             return Follow::where([
                 'follower_id' => $follower->getKey(),
                 'follower_type' => $follower->getMorphClass(),
@@ -56,7 +56,7 @@ class UnfollowAction
 
     protected function invalidateFollowCaches(Model $follower, Model $followable): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 
@@ -80,6 +80,7 @@ class UnfollowAction
     protected function getFollowCacheKey(Model $follower, Model $followable): string
     {
         $prefix = config('social-follow.follow.cache.prefix', 'social_follow');
+
         return sprintf('%s:relationship:%s:%s:%s:%s',
             $prefix,
             $follower->getKey(),
@@ -91,7 +92,7 @@ class UnfollowAction
 
     public static function invalidateAllCaches(Model $follower, Model $followable): void
     {
-        if (!config('social-follow.follow.cache.enabled')) {
+        if (! config('social-follow.follow.cache.enabled')) {
             return;
         }
 

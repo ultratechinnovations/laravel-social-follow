@@ -16,7 +16,7 @@ final class UnblockAction
         return DB::transaction(function () use ($blocker, $blockable) {
             $block = $this->getBlock($blocker, $blockable);
 
-            if (!$block) {
+            if (! $block) {
                 return false;
             }
 
@@ -32,7 +32,7 @@ final class UnblockAction
 
     protected function getBlock(Model $blocker, Model $blockable): ?Block
     {
-        if (!config('social-follow.block.cache.enabled', false)) {
+        if (! config('social-follow.block.cache.enabled', false)) {
             return Block::where([
                 'blocker_id' => $blocker->getKey(),
                 'blocker_type' => $blocker->getMorphClass(),
@@ -44,7 +44,7 @@ final class UnblockAction
         $cacheKey = $this->getBlockCacheKey($blocker, $blockable);
         $ttl = config('social-follow.block.cache.ttl', 86400);
 
-        return Cache::memo()->remember($cacheKey, $ttl, function() use ($blocker, $blockable) {
+        return Cache::memo()->remember($cacheKey, $ttl, function () use ($blocker, $blockable) {
             return Block::where([
                 'blocker_id' => $blocker->getKey(),
                 'blocker_type' => $blocker->getMorphClass(),
@@ -56,7 +56,7 @@ final class UnblockAction
 
     protected function invalidateBlockCaches(Model $blocker, Model $blockable): void
     {
-        if (!config('social-follow.block.cache.enabled', false)) {
+        if (! config('social-follow.block.cache.enabled', false)) {
             return;
         }
 
@@ -79,6 +79,7 @@ final class UnblockAction
     protected function getBlockCacheKey(Model $blocker, Model $blockable): string
     {
         $prefix = config('social-follow.block.cache.prefix', 'social_block');
+
         return sprintf('%s:block:%s:%s:%s:%s',
             $prefix,
             $blocker->getKey(),
@@ -93,7 +94,7 @@ final class UnblockAction
      */
     public static function invalidateAllCaches(Model $blocker, Model $blockable): void
     {
-        if (!config('social-follow.block.cache.enabled', false)) {
+        if (! config('social-follow.block.cache.enabled', false)) {
             return;
         }
 

@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace UltraTechInnovations\SocialFollow\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use UltraTechInnovations\SocialFollow\Models\Follow;
 use UltraTechInnovations\SocialFollow\Notifications\FollowAcceptedNotification;
 
@@ -13,7 +15,7 @@ final class AcceptFollowRequestAction
     public function execute(Model $follower, Model $followable): bool
     {
 
-        $result =  DB::transaction(function () use ($follower, $followable) {
+        $result = DB::transaction(function () use ($follower, $followable) {
             $follow = Follow::where([
                 'follower_id' => $follower->getKey(),
                 'follower_type' => $follower->getMorphClass(),

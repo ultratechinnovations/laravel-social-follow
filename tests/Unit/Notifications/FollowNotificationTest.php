@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Notifications;
 
-use Tests\TestModels\User;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestModels\User;
 use UltraTechInnovations\SocialFollow\Notifications\FollowNotification;
 
 beforeEach(function () {
@@ -15,14 +15,14 @@ beforeEach(function () {
     Schema::dropIfExists('notifications');
 
     // Setup tables
-    if (!Schema::hasTable('test_users')) {
+    if (! Schema::hasTable('test_users')) {
         Schema::create('test_users', function ($table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
         });
     }
-    if(!Schema::hasTable('notifications')) {
+    if (! Schema::hasTable('notifications')) {
         Schema::create('notifications', function ($table) {
             $table->uuid('id')->primary();
             $table->string('type');
@@ -54,19 +54,19 @@ it('uses default notification channels when none configured', function () {
     Config::set('social-follow.notifications.channels', null);
 
     $notification = new FollowNotification($this->follower);
-    expect($notification->via(new User()))->toBe([]);
+    expect($notification->via(new User))->toBe([]);
 });
 
 it('uses configured notification channels', function () {
     Config::set('social-follow.notifications.channels', ['database', 'broadcast']);
 
     $notification = new FollowNotification($this->follower);
-    expect($notification->via(new User()))->toBe(['database', 'broadcast']);
+    expect($notification->via(new User))->toBe(['database', 'broadcast']);
 });
 
 it('generates correct broadcast message', function () {
     $notification = new FollowNotification($this->follower, true);
-    $message = $notification->toBroadcast(new User());
+    $message = $notification->toBroadcast(new User);
 
     expect($message)->toBeInstanceOf(BroadcastMessage::class)
         ->and($message->data)->toMatchArray([
@@ -79,7 +79,7 @@ it('generates correct broadcast message', function () {
 
 it('generates correct array representation', function () {
     $notification = new FollowNotification($this->follower, false);
-    $array = $notification->toArray(new User());
+    $array = $notification->toArray(new User);
 
     expect($array)->toMatchArray([
         'follower_id' => $this->follower->id,
@@ -89,7 +89,8 @@ it('generates correct array representation', function () {
 });
 
 it('handles different notifiable types', function () {
-    $page = new class extends \Illuminate\Database\Eloquent\Model {
+    $page = new class extends \Illuminate\Database\Eloquent\Model
+    {
         protected $table = 'pages';
     };
 
@@ -104,7 +105,7 @@ it('includes current timestamp in broadcast', function () {
     $this->travelTo($now);
 
     $notification = new FollowNotification($this->follower);
-    $message = $notification->toBroadcast(new User());
+    $message = $notification->toBroadcast(new User);
 
     expect($message->data['created_at'])->toBe($now->toDateTimeString());
 });
@@ -112,11 +113,11 @@ it('includes current timestamp in broadcast', function () {
 it('shows correct acceptance status in output', function () {
     // Test with acceptance required
     $notification1 = new FollowNotification($this->follower, true);
-    expect($notification1->toArray(new User())['requires_acceptance'])->toBeTrue();
+    expect($notification1->toArray(new User)['requires_acceptance'])->toBeTrue();
 
     // Test without acceptance required
     $notification2 = new FollowNotification($this->follower, false);
-    expect($notification2->toBroadcast(new User())->data['requires_acceptance'])->toBeFalse();
+    expect($notification2->toBroadcast(new User)->data['requires_acceptance'])->toBeFalse();
 });
 
 it('sends notification to notifiable', function () {
