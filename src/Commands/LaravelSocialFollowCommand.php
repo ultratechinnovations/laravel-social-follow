@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace UltraTechInnovations\SocialFollow\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelSocialFollowCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-social-follow';
 
     public $description = 'My command';
 

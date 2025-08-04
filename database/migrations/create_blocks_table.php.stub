@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        $prefix = config('social-follow.table_prefix');
+        $tableName = $prefix.'blocks';
+        Schema::create($tableName, function (Blueprint $table) {
+            $table->id();
+            $table->morphs('blocker');
+            $table->morphs('blockable');
+            $table->timestamps();
+
+            $table->unique([
+                'blocker_id',
+                'blocker_type',
+                'blockable_id',
+                'blockable_type'
+            ], 'block_unique');
+
+            $table->index(['blocker_id', 'blocker_type'], 'blocker_index');
+            $table->index(['blockable_id', 'blockable_type'], 'blockable_index');
+        });
+    }
+};

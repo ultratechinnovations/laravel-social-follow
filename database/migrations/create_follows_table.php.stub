@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        $prefix = config('social-follow.table_prefix');
+        $tableName = $prefix.'follows';
+        Schema::create($tableName, function (Blueprint $table) {
+            $table->id();
+            $table->morphs('follower');
+            $table->morphs('followable');
+            $table->timestamp('accepted_at')->nullable();
+            $table->timestamps();
+
+            $table->unique([
+                'follower_id',
+                'follower_type',
+                'followable_id',
+                'followable_type'
+            ], 'follow_unique');
+
+            $table->index(['follower_id', 'follower_type'], 'follower_index');
+            $table->index(['followable_id', 'followable_type'], 'followable_index');
+        });
+    }
+};
